@@ -14,8 +14,8 @@ export default function LoginPage() {
   const handleSubmit = async () => {
     setError("");
     try {
-      const data = await loginUser(email, password);
-      login(data.token);
+      const res = await loginUser(email, password);
+      login(res.data.access_token, res.data.refresh_token);
       router.push("/dashboard");
     } catch (err: any) {
       setError(err.message);

@@ -3,8 +3,8 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 interface AuthContextType {
-  token: string | null;
-  login: (token: string) => void;
+  accessToken: string | null;
+  login: (access_token: string, refresh_token: string) => void;
   logout: () => void;
   isAuthenticated: boolean;
 }
@@ -12,27 +12,29 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [token, setToken] = useState<string | null>(null);
+  const [accessToken, setAccessToken] = useState<string | null>(null);
   const router = useRouter();
 
   useEffect(() => {
-    const stored = localStorage.getItem("token");
-    if (stored) setToken(stored);
+    const stored = localStorage.getItem("access_token");
+    if (stored) setAccessToken(stored);
   }, []);
 
-  const login = (token: string) => {
-    localStorage.setItem("token", token);
-    setToken(token);
+  const login = (access_token: string, refresh_token: string) => {
+    localStorage.setItem("access_token", access_token);
+    localStorage.setItem("refresh_token", refresh_token);
+    setAccessToken(access_token);
   };
 
   const logout = () => {
-    localStorage.removeItem("token");
-    setToken(null);
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+    setAccessToken(null);
     router.push("/login");
   };
 
   return (
-    <AuthContext.Provider value={{ token, login, logout, isAuthenticated: !!token }}>
+    <AuthContext.Provider value={{ accessToken, login, logout, isAuthenticated: !!accessToken }}>
       {children}
     </AuthContext.Provider>
   );
