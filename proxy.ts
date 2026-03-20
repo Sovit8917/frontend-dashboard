@@ -1,10 +1,10 @@
-import { auth } from "@/auth";
-import { NextRequest, NextResponse } from "next/server";
+import NextAuth from "next-auth";
+import { authConfig } from "./auth.config";
 
-export default async function proxy(request: NextRequest) {
-  return auth(request as any);
-}
+const { auth: middleware } = NextAuth(authConfig);
+
+export default middleware;
 
 export const config = {
-  matcher: ["/dashboard/:path*"],
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
 };

@@ -14,20 +14,73 @@ export default function RegisterPage() {
     setError("");
     try {
       await registerUser(name, email, password);
-      router.push("/login"); // redirect to login after register
+      router.push("/login");
     } catch (err: any) {
       setError(err.message);
     }
   };
 
   return (
-    <div>
-      <h1>Register</h1>
-      {error && <p>{error}</p>}
-      <input placeholder="Name" value={name} onChange={e => setName(e.target.value)} />
-      <input placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} />
-      <input placeholder="Password" type="password" value={password} onChange={e => setPassword(e.target.value)} />
-      <button onClick={handleSubmit}>Register</button>
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      
+      {/* Card */}
+      <div className="bg-white p-8 rounded-xl w-full max-w-md shadow-xl border border-gray-200">
+        
+        <h1 className="text-3xl font-bold text-gray-800 mb-6 text-center">
+          Create Account
+        </h1>
+
+        {error && (
+          <p className="text-red-500 text-sm mb-4 text-center">
+            {error}
+          </p>
+        )}
+
+        {/* Name */}
+        <input
+          className="w-full mb-4 px-4 py-3 rounded-md bg-gray-50 text-gray-800 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          placeholder="Full Name"
+          value={name}
+          onChange={e => setName(e.target.value)}
+        />
+
+        {/* Email */}
+        <input
+          className="w-full mb-4 px-4 py-3 rounded-md bg-gray-50 text-gray-800 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          placeholder="Email"
+          type="email"
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+        />
+
+        {/* Password */}
+        <input
+          className="w-full mb-6 px-4 py-3 rounded-md bg-gray-50 text-gray-800 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          placeholder="Password"
+          type="password"
+          value={password}
+          onChange={e => setPassword(e.target.value)}
+        />
+
+        {/* Button */}
+        <button
+          onClick={handleSubmit}
+          className="w-full bg-blue-600 hover:bg-blue-700 transition duration-300 text-white font-semibold py-3 rounded-md"
+        >
+          Register
+        </button>
+
+        {/* Login Link */}
+        <p className="text-gray-500 text-sm mt-6 text-center">
+          Already have an account?{" "}
+          <span
+            onClick={() => router.push("/login")}
+            className="text-blue-600 hover:underline cursor-pointer"
+          >
+            Login
+          </span>
+        </p>
+      </div>
     </div>
   );
 }

@@ -6,16 +6,10 @@ export const authConfig: NextAuthConfig = {
     signIn: "/login",
   },
   callbacks: {
-    authorized({ auth, request: { nextUrl } }) {
-      const isLoggedIn = !!auth?.user;
-      const isOnDashboard = nextUrl.pathname.startsWith("/dashboard");
-      if (isOnDashboard) {
-        return isLoggedIn;
-      }
+    authorized() {
       return true;
     },
     async jwt({ token, user }) {
-      // On first sign in, user object is available — persist tokens
       if (user) {
         token.accessToken = user.accessToken;
         token.refreshToken = user.refreshToken;
