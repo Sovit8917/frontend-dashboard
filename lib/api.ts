@@ -1,5 +1,11 @@
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
+function extractError(data: any): string {
+  if (Array.isArray(data.message)) return data.message.join(", ");
+  if (typeof data.message === "string") return data.message;
+  return JSON.stringify(data);
+}
+
 export async function registerUser(name: string, email: string, password: string) {
   const res = await fetch(`${BASE_URL}/auth/register`, {
     method: "POST",
@@ -8,8 +14,8 @@ export async function registerUser(name: string, email: string, password: string
   });
 
   const data = await res.json();
-  if (!res.ok) throw new Error(data.message || JSON.stringify(data));
-  return data; // { message: "User created Successfully", data: body }
+  if (!res.ok) throw new Error(extractError(data));
+  return data;
 }
 
 export async function loginUser(email: string, password: string) {
@@ -20,8 +26,8 @@ export async function loginUser(email: string, password: string) {
   });
 
   const data = await res.json();
-  if (!res.ok) throw new Error(data.message || JSON.stringify(data));
-  return data; // { message: "Login Successful", data: { access_token, refresh_token, expired_at } }
+  if (!res.ok) throw new Error(extractError(data));
+  return data;
 }
 
 export async function refreshToken(refresh_token: string) {
@@ -32,6 +38,6 @@ export async function refreshToken(refresh_token: string) {
   });
 
   const data = await res.json();
-  if (!res.ok) throw new Error(data.message || JSON.stringify(data));
+  if (!res.ok) throw new Error(extractError(data));
   return data;
 }
