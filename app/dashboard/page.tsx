@@ -1,28 +1,30 @@
 "use client";
-import { useEffect } from "react";
+import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/context/AuthContext";
+import { useEffect } from "react";
 
 export default function DashboardPage() {
-  const { user, logout, isAuthenticated } = useAuth();
+  const { data: session, status } = useSession();
   const router = useRouter();
 
   useEffect(() => {
-    if (!isAuthenticated && !localStorage.getItem("access_token")) {
+    if (status === "unauthenticated") {
       router.push("/login");
     }
-  }, [isAuthenticated]);
+  }, [status]);
+
+  if (status === "loading") return <p>Loading...</p>;
 
   return (
     <div>
       <h1>Dashboard</h1>
-      {user && (
+      {session?.user && (
         <div>
-          <p>Name: {user.name}</p>
-          <p>Email: {user.email}</p>
+          <p>Name: {session.user.name}</p>
+          <p>Email: {session.user.email}</p>
         </div>
       )}
-      <button onClick={logout}>Logout</button>
+      <button onClick={() => signOut({ callbackUrl: "/login" })}>Logout</button>
     </div>
   );
 }
