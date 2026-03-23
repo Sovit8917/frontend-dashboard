@@ -1,9 +1,8 @@
 import { auth } from "@/auth";
-import { redirect } from "next/navigation";
+import AuthRedirect from "@/components/AuthRedirect";
 import { ReactNode } from "react";
 
 export default async function AuthGuard({ children }: { children: ReactNode }) {
   const session = await auth();
-  if (!session) redirect("/login");
-  return <>{children}</>;
+  return <>{session ? children : <AuthRedirect />}</>;
 }

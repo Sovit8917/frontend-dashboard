@@ -1,6 +1,12 @@
 import GuestGuard from "@/hocs/GuestGuard";
-import { ReactNode } from "react";
+import { ReactNode, Suspense } from "react";
 
 export default async function Layout({ children }: { children: ReactNode }) {
-  return <GuestGuard>{children}</GuestGuard>;
+  return (
+    <GuestGuard>
+      <Suspense>
+        {children}
+      </Suspense>
+    </GuestGuard>
+  );
 }
