@@ -32,7 +32,7 @@ export const authConfig: NextAuthConfig = {
     Credentials({
       name: "Credentials",
       credentials: {
-        email: { label: "Email", type: "email" },
+        email: { label: "Username", type: "text" },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
@@ -45,8 +45,9 @@ export const authConfig: NextAuthConfig = {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
-                email: credentials.email,
+                username: credentials.email,
                 password: credentials.password,
+                expiresInMins: 30,
               }),
             }
           );
@@ -54,15 +55,13 @@ export const authConfig: NextAuthConfig = {
           const json = await res.json();
           if (!res.ok) return null;
 
-          const { access_token, refresh_token, user } = json.data;
-
           return {
-            id: user.uuid,
-            uuid: user.uuid,
-            name: user.name,
-            email: user.email,
-            accessToken: access_token,
-            refreshToken: refresh_token,
+            id: String(json.id),
+            uuid: String(json.id),
+            name: `${json.firstName} ${json.lastName}`,
+            email: json.email,
+            accessToken: json.accessToken,
+            refreshToken: json.refreshToken,
           };
         } catch {
           return null;

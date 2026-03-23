@@ -6,23 +6,15 @@ function extractError(data: any): string {
   return JSON.stringify(data);
 }
 
-export async function registerUser(name: string, email: string, password: string) {
-  const res = await fetch(`${BASE_URL}/auth/register`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ name, email, password }),
-  });
-
-  const data = await res.json();
-  if (!res.ok) throw new Error(extractError(data));
-  return data;
-}
-
 export async function loginUser(email: string, password: string) {
   const res = await fetch(`${BASE_URL}/auth/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password }),
+    body: JSON.stringify({
+      username: email,
+      password,
+      expiresInMins: 30,
+    }),
   });
 
   const data = await res.json();
@@ -31,10 +23,27 @@ export async function loginUser(email: string, password: string) {
 }
 
 export async function refreshToken(refresh_token: string) {
-  const res = await fetch(`${BASE_URL}/auth/refresh-token`, {
+  const res = await fetch(`${BASE_URL}/auth/refresh`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ refresh_token }),
+    body: JSON.stringify({
+      refreshToken: refresh_token,
+      expiresInMins: 30,
+    }),
+  });
+
+  const data = await res.json();
+  if (!res.ok) throw new Error(extractError(data));
+  return data;
+}
+
+export async function getMe(access_token: string) {
+  const res = await fetch(`${BASE_URL}/auth/me`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${access_token}`,
+    },
   });
 
   const data = await res.json();
